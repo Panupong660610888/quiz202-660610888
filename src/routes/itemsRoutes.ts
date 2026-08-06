@@ -10,7 +10,7 @@ import {
 // import types
 import type { Item } from "../libs/types.ts";
 // import database
-import { items } from "../db/db";
+import { items } from "../db/db.ts";
 //import uuid
 import { v4 as uuidv4 } from "uuid";
 

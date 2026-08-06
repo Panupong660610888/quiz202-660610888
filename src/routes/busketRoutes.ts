@@ -11,7 +11,7 @@ import {
 // import types
 import type { Item } from "../libs/types.ts";
 // import database
-import { users, items } from "../db/db";
+import { users, items } from "../db/db.ts";
 //import uuid
 import { v4 as uuidv4 } from "uuid";
 
