@@ -33,7 +33,7 @@ app.use("/myinfo", myInfo);
 app.use("/api/v888/auth", usersRoutes);
 app.use("/api/v888/busket", busketRoutes);
 
-app.get("/api/myInfo", (req: Request, res: Response) => {
+app.get("/myInfo", (req: Request, res: Response) => {
   return res.json({
     ok: true,
     fullName: "Panupong Wang-Gae",
