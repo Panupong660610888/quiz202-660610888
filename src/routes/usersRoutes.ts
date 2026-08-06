@@ -7,24 +7,56 @@ dotenv.config();
 import type { User, CustomRequest } from "../libs/types.js";
 
 // import authentication middleware
-import { authenticateToken } from "../middlewares/authenMiddleware.ts";
-
+import { authenticateToken } from "../middlewares/authenMiddleware.js";
+import { checkRoleMiddleware } from "../middlewares/checkRoleMiddleware.js";
 // import database
-import { users } from "../db/db.ts";
+import { users } from "../db/db.js";
 
 const router = Router();
 
 // POST /api/vXXX/auth/login
 router.post("/login", (req: Request, res: Response) => {
-  try { 
+  try {
+    const { username, password } = req.body;
+    const user = users.find(
+      (u) => u.username === username && u.password === password,
+    );
+
+    // 2. check if user exists (search with username & password in DB)
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Username or Password is incorrect",
+      });
+    }
+
+    // 3. create JWT token (with user info object as payload) using JWT_SECRET_KEY
+
+    const jwt_secret = process.env.JWT_SECRET || "this_is_my_secret_key";
+    const token = jwt.sign(
+      {
+        //App payload
+        username: user.username,
+        userId: user.userId,
+        role: user.userId,
+      },
+      jwt_secret,
+      { expiresIn: "10m" },
+    );
+
+    //    (optional: save the token as part of User data)
+    user.tokens = user.tokens ? [...user.tokens, token] : [token];
+
     return res.status(200).json({
       success: true,
       message: "Login successful",
+      token: token,
     });
   } catch (err) {
     return res.status(500).json({
       success: false,
-      message: "Something is wrong, please try again",
+      message: "Username or Password is incorrect",
       error: err,
     });
   }
